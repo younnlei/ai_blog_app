@@ -1,0 +1,9 @@
+.env
+.env.save
+*.env
+media/
+*.mp3
+*.webm
+*.mp4
+__pycache__/
+*.pyc
