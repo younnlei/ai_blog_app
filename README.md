@@ -1,4 +1,4 @@
-# Scriptly 🎥✍️  
+# Scriptly ✍️  
 Turn YouTube videos into digestable posts—fast and easy.
 
 Scriptly is a simple tool I built that lets you turn YouTube videos into natural, readable blog posts using AI. Just paste in a video link and get a full blog article—no typing, no transcribing, no stress.
