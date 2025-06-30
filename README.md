@@ -50,12 +50,7 @@ Scriptly is a simple tool I built that lets you turn YouTube videos into natural
 ![Processing](./assets/screenshot2.png)  
 
 *Generated blog post:*  
-![Generated](./assets/screenshot3.png)  
-
----
-
-## Notes  
-This project is still local only. no deployment yet. But all the core features work!
+![Generated](./assets/screenshot3.png)
 
 ---
 
