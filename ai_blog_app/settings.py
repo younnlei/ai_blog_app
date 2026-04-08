@@ -1,4 +1,5 @@
 import os
+import dj_database_url
 from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,14 +80,11 @@ WSGI_APPLICATION = 'ai_blog_app.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'ai_database_m0vt'),
-        'USER': os.getenv('DB_USER', 'ai_database_m0vt_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'oEp5GC0KRHtEzpRb7R9PsstFuLRBiwKm'),
-        'HOST': os.getenv('DB_HOST', 'dpg-d17kbh3uibrs73fq364g-a.oregon-postgres.render.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
 
 
