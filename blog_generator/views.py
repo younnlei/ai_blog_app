@@ -138,7 +138,10 @@ def user_signup(request):
                 login(request, user)
                 return redirect('/')
             except Exception as e:
-                error_message = 'Error creating account'
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error('Signup failed for username "%s": %s', username, e, exc_info=True)
+                error_message = f'Error creating account: {e}'
                 return render(request, 'signup.html', {'error_message':error_message})
         else:
             error_message = 'Password do not match'
