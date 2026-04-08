@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d(ys*jq^r0)2xhtl$4&gqr5$(9*$r^ut+y&3v$c)gats9ixha$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -78,17 +78,14 @@ WSGI_APPLICATION = 'ai_blog_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-SECRET_KEY = config('SECRET_KEY')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ai_database_m0vt',
-        'USER' :'ai_database_m0vt_user',
-        'PASSWORD' :'oEp5GC0KRHtEzpRb7R9PsstFuLRBiwKm',
-        'HOST': 'dpg-d17kbh3uibrs73fq364g-a.oregon-postgres.render.com',
-        'PORT' : '5432',
-
+        'NAME': os.getenv('DB_NAME', 'ai_database_m0vt'),
+        'USER': os.getenv('DB_USER', 'ai_database_m0vt_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'oEp5GC0KRHtEzpRb7R9PsstFuLRBiwKm'),
+        'HOST': os.getenv('DB_HOST', 'dpg-d17kbh3uibrs73fq364g-a.oregon-postgres.render.com'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -129,9 +126,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'

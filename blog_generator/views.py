@@ -25,6 +25,7 @@ def index(request):
     return render(request, 'index.html')
 
 @csrf_exempt
+@login_required
 def generate_blog(request):
     if request.method == 'POST':
         try:
@@ -136,7 +137,7 @@ def user_signup(request):
                 user.save()
                 login(request, user)
                 return redirect('/')
-            except:
+            except Exception as e:
                 error_message = 'Error creating account'
                 return render(request, 'signup.html', {'error_message':error_message})
         else:
