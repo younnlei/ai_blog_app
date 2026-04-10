@@ -11,7 +11,11 @@ import assemblyai as aai
 import openai
 from .models import BlogPost
 from dotenv import load_dotenv
+import logging
+import traceback
 import ssl
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -33,30 +37,38 @@ def generate_blog(request):
         except (KeyError, json.JSONDecodeError):
             return JsonResponse({'error': 'Invalid data sent'}, status=400)
 
-        # get yt title
-        title = yt_title(yt_link)
+        try:
+            # get yt title
+            title = yt_title(yt_link)
 
-        # get transcript
-        transcription = get_transcription(yt_link)
-        if not transcription:
-            return JsonResponse({'error': " Failed to get transcript"}, status=500)
+            # get transcript
+            transcription = get_transcription(yt_link)
+            if not transcription:
+                return JsonResponse({'error': " Failed to get transcript"}, status=500)
 
-        # use OpenAI to generate the blog
-        blog_content = generate_blog_from_transcription(transcription)
-        if not blog_content:
-            return JsonResponse({'error': " Failed to generate blog article"}, status=500)
+            # use OpenAI to generate the blog
+            blog_content = generate_blog_from_transcription(transcription)
+            if not blog_content:
+                return JsonResponse({'error': " Failed to generate blog article"}, status=500)
 
-        # save blog article to database
-        new_blog_article = BlogPost.objects.create(
-            user=request.user,
-            youtube_title=title,
-            youtube_link=yt_link,
-            generated_content=blog_content,
-        )
-        new_blog_article.save()
+            # save blog article to database
+            new_blog_article = BlogPost.objects.create(
+                user=request.user,
+                youtube_title=title,
+                youtube_link=yt_link,
+                generated_content=blog_content,
+            )
+            new_blog_article.save()
 
-        # return blog article as a response
-        return JsonResponse({'content': blog_content})
+            # return blog article as a response
+            return JsonResponse({'content': blog_content})
+        except Exception as e:
+            logger.error(
+                "generate_blog failed for link %s\n%s",
+                yt_link,
+                traceback.format_exc(),
+            )
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
