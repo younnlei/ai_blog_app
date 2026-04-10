@@ -1,56 +1,29 @@
-# Scriptly ✍️  
+# Scriptly ✍️
 
-Scriptly lets you turn YouTube videos into natural, readable blog posts using AI. Just paste in a video link and get a full blog article. No typing, no transcribing, no stress (but maybe you can tweak it to your liking with minimal edits!)
+An AI-powered web app that turns YouTube videos into blog posts. Paste a link, get an article.
 
----
-
-## What it does  
-- Paste a YouTube video link  
-- It pulls the audio and transcribes it  
-- AI rewrites it into a clean, conversational blog post  
+> 🚧 Work in progress — React frontend coming soon.
 
 ---
 
-## Features  
-- One-click blog generation from any YouTube video  
-- AI-generated content  
-- Clean and minimal UI  
-- Login system to save your posts (locally for now)  
+## How it works
+
+1. Paste a YouTube link
+2. yt-dlp downloads the audio
+3. AssemblyAI transcribes it
+4. OpenAI rewrites it into a clean blog post
+5. Post is saved to your account
 
 ---
 
-## Tech stack  
-**Frontend:**  
-- HTML, TailwindCSS, JavaScript  
+## Tech stack
 
-**Backend:**  
-- Django (Python)  
-- PostgreSQL
-
-**Other tools:**  
-- OpenAI (for blog writing)  
-- AssemblyAI (for transcription)  
-- yt-dlp (to handle YouTube videos)  
+**Backend:** Django, PostgreSQL  
+**Frontend:** HTML, TailwindCSS, JavaScript (React coming soon)  
+**AI:** OpenAI GPT, AssemblyAI, yt-dlp
 
 ---
 
-## How it works  
-1. Paste a YouTube link  
-2. Scriptly downloads and transcribes the video  
-3. AI turns the transcript into a blog article  
-4. You get a clean, readable post you can save or edit  
+## Status
 
----
-
-## Screenshots  
-*Home screen:*  
-![Homepage](./assets/screenshot1.png)  
-
-*Video processing:*  
-![Processing](./assets/screenshot2.png)  
-
-*Generated blog post:*  
-![Generated](./assets/screenshot3.png)
-
----
-
+Core pipeline works locally. Deployment and React frontend actively in progress.
