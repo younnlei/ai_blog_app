@@ -121,6 +121,8 @@
 
                 const endpointUrl = '/generate-blog';
                 
+                const loadingIndicator = document.getElementById('loading-circle');
+
                 try {
                     const response = await fetch(endpointUrl, {
                         method: 'POST',
@@ -132,15 +134,18 @@
 
                     const data = await response.json();
 
-                    blogContent.innerHTML = data.content;
-                    loadingIndicator.classList.add('hidden');
+                    if (!response.ok || data.error) {
+                        blogContent.innerHTML = `<p class="text-red-600">${data.error || 'Something went wrong. Please try again later.'}</p>`;
+                    } else {
+                        blogContent.innerHTML = data.content;
+                    }
 
                 } catch (error) {
                     console.error("Error occurred:", error);
-                    alert("Something went wrong. Please try again later.");
-                    
+                    blogContent.innerHTML = '<p class="text-red-600">Something went wrong. Please try again later.</p>';
+                } finally {
+                    loadingIndicator.style.display = 'none';
                 }
-                document.getElementById('loading-circle').style.display = 'none';
             } else {
                 alert("Please enter a YouTube link.");
             }
