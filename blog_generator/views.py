@@ -96,7 +96,7 @@ def download_audio(link):
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(link, download=True)
-            title = info.get('title', 'audio')
+            base = os.path.splitext(ydl.prepare_filename(info))[0]
     except yt_dlp.utils.DownloadError as e:
         msg = str(e).lower()
         if any(phrase in msg for phrase in BOT_DETECTION_PHRASES):
@@ -104,7 +104,7 @@ def download_audio(link):
                 'YouTube is blocking this request, please try again in a few minutes or try a different video.'
             )
         raise
-    return os.path.join(settings.MEDIA_ROOT, f"{title}.mp3")
+    return base + '.mp3'
 
 def get_transcription(link):
     audio_file = download_audio(link)
