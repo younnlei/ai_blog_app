@@ -79,6 +79,8 @@ def yt_title(link):
 def get_transcription(link):
     aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
     transcript = aai.Transcriber().transcribe(link)
+    if transcript.status == aai.TranscriptStatus.error:
+        raise RuntimeError(f"AssemblyAI transcription error: {transcript.error}")
     return transcript.text
 
 def generate_blog_from_transcription(transcription):
