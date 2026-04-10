@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 import json
-from pytube import YouTube
+import yt_dlp
 import os
 import assemblyai as aai
 import openai
@@ -62,18 +62,27 @@ def generate_blog(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def yt_title(link):
-    yt = YouTube(link)
-    title = yt.title
-    return title
+    with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+        info = ydl.extract_info(link, download=False)
+    return info.get('title', '')
 
 def download_audio(link):
-    yt = YouTube(link)
-    video = yt.streams.filter(only_audio=True).first()
-    out_file = video.download(output_path=settings.MEDIA_ROOT)
-    base, ext = os.path.splitext(out_file)
-    new_file = base + '.mp3'
-    os.rename(out_file, new_file)
-    return new_file
+    output_template = os.path.join(settings.MEDIA_ROOT, '%(title)s.%(ext)s')
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': output_template,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'quiet': True,
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=True)
+        title = info.get('title', 'audio')
+    mp3_file = os.path.join(settings.MEDIA_ROOT, f"{title}.mp3")
+    return mp3_file
 
 def get_transcription(link):
     audio_file = download_audio(link)
