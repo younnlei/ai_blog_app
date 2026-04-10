@@ -4,10 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.conf import settings
 import json
-import yt_dlp
 import os
+import yt_dlp
 import assemblyai as aai
 import openai
 from .models import BlogPost
@@ -66,31 +65,9 @@ def yt_title(link):
         info = ydl.extract_info(link, download=False)
     return info.get('title', '')
 
-def download_audio(link):
-    output_template = os.path.join(settings.MEDIA_ROOT, '%(title)s.%(ext)s')
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': output_template,
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        'quiet': True,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(link, download=True)
-        title = info.get('title', 'audio')
-    mp3_file = os.path.join(settings.MEDIA_ROOT, f"{title}.mp3")
-    return mp3_file
-
 def get_transcription(link):
-    audio_file = download_audio(link)
     aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
-
-    transcriber = aai.Transcriber()
-    transcript = transcriber.transcribe(audio_file)
-
+    transcript = aai.Transcriber().transcribe(link)
     return transcript.text
 
 def generate_blog_from_transcription(transcription):
