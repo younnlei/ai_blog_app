@@ -30,14 +30,14 @@ def index(request):
 @csrf_exempt
 @login_required
 def generate_blog(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            yt_link = data['link']
-        except (KeyError, json.JSONDecodeError):
-            return JsonResponse({'error': 'Invalid data sent'}, status=400)
+    try:
+        if request.method == 'POST':
+            try:
+                data = json.loads(request.body)
+                yt_link = data['link']
+            except (KeyError, json.JSONDecodeError):
+                return JsonResponse({'error': 'Invalid data sent'}, status=400)
 
-        try:
             # get yt title
             title = yt_title(yt_link)
 
@@ -62,15 +62,11 @@ def generate_blog(request):
 
             # return blog article as a response
             return JsonResponse({'content': blog_content})
-        except Exception as e:
-            logger.error(
-                "generate_blog failed for link %s\n%s",
-                yt_link,
-                traceback.format_exc(),
-            )
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        else:
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error': str(e)}, status=500)
 
 def yt_title(link):
     parsed = urlparse(link)
