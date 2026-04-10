@@ -4,8 +4,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.conf import settings
 import json
 import os
+import yt_dlp
 from urllib.parse import urlparse, parse_qs
 import assemblyai as aai
 import openai
@@ -76,9 +78,37 @@ def yt_title(link):
         video_id = parsed.path.lstrip('/')
     return video_id or ''
 
+BOT_DETECTION_PHRASES = ('sign in to confirm', 'bot', 'blocked', 'captcha', 'unavailable')
+
+def download_audio(link):
+    output_template = os.path.join(settings.MEDIA_ROOT, '%(title)s.%(ext)s')
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': output_template,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'quiet': True,
+    }
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(link, download=True)
+            title = info.get('title', 'audio')
+    except yt_dlp.utils.DownloadError as e:
+        msg = str(e).lower()
+        if any(phrase in msg for phrase in BOT_DETECTION_PHRASES):
+            raise RuntimeError(
+                'YouTube is blocking this request, please try again in a few minutes or try a different video.'
+            )
+        raise
+    return os.path.join(settings.MEDIA_ROOT, f"{title}.mp3")
+
 def get_transcription(link):
+    audio_file = download_audio(link)
     aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
-    transcript = aai.Transcriber().transcribe(link)
+    transcript = aai.Transcriber().transcribe(audio_file)
     if transcript.status == aai.TranscriptStatus.error:
         raise RuntimeError(f"AssemblyAI transcription error: {transcript.error}")
     return transcript.text
