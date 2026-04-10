@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 import os
-import yt_dlp
+from urllib.parse import urlparse, parse_qs
 import assemblyai as aai
 import openai
 from .models import BlogPost
@@ -61,9 +61,12 @@ def generate_blog(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def yt_title(link):
-    with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
-        info = ydl.extract_info(link, download=False)
-    return info.get('title', '')
+    parsed = urlparse(link)
+    video_id = parse_qs(parsed.query).get('v', [None])[0]
+    if not video_id:
+        # handle youtu.be/VIDEO_ID short URLs
+        video_id = parsed.path.lstrip('/')
+    return video_id or ''
 
 def get_transcription(link):
     aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
