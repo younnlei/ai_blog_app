@@ -91,7 +91,7 @@ def download_audio(link):
             'preferredquality': '192',
         }],
         'quiet': True,
-        'ffmpeg_location': '/usr/bin',
+        'ffmpeg_location': os.getenv('FFMPEG_LOCATION', '/usr/bin'),
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
