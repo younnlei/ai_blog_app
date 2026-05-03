@@ -3,53 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Blog Posts</title>
+    <title>Scriptly — All Posts</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'DM Sans', sans-serif; }
+
+        body {
+            min-height: 100vh;
+            background: #f5f0e8;
+            background-image:
+                radial-gradient(ellipse at 10% 20%, rgba(220, 210, 140, 0.55) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 10%, rgba(180, 190, 170, 0.4) 0%, transparent 45%),
+                radial-gradient(ellipse at 60% 80%, rgba(210, 200, 150, 0.35) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 80%, rgba(190, 185, 160, 0.3) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.2s;
+        }
+
+        .post-card:hover {
+            background: rgba(255, 255, 255, 0.55);
+            transform: translateY(-2px);
+        }
+
+        .serif { font-family: 'DM Serif Display', serif; }
+    </style>
 </head>
+<body class="flex flex-col min-h-screen">
 
-<body class="bg-gray-100 font-sans antialiased">
+    <!-- Nav -->
+    <nav class="nav-glass px-8 py-4 flex justify-end items-center sticky top-0 z-10">
+        <a href="/logout/" class="text-sm text-gray-500 hover:text-gray-800 transition-colors tracking-wide">Log out</a>
+    </nav>
 
-     <!-- Nav Bar-->
-     <nav class="bg-blue-600 p-4 text-white flex justify-between">
-        <div>
-           <h1 class="text-3xl font-bold">AI Blog Generator</h1>
-        </div>
-        <div>
-           <a href="#" class="text-white hover:underline">Logout</a>
-        </div>
-        </nav>
+    <!-- Main -->
+    <div class="flex-grow flex items-start justify-center px-4 pt-16 pb-20">
+        <div class="w-full max-w-2xl">
 
-        <!-- Main Content Container -->
-
-        <div class="container mx-auto mt-10 px-4 sm:px-0">
-            <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-
-
-                <!-- Blog Posts section -->
-
-                <section>
-                    <h2  class="text-xl mb-4 font-semibold">
-                        All Blog Posts
-                    </h2>
-                    <div class="space-y-4">
-                        <div class="border border-gray-300 p-4 rounded-lg">
-                            <h3 class="text-log font-semibold">Blog Post Title 1</h3>
-                            <p>This is the content of the blog post.Lorem ipsum dolor sit ament...</p>
-                        </div>
-
-                        <div class="border border-gray-300 p-4 rounded-lg">
-                            <h3 class="text-log font-semibold">Blog Post Title 1</h3>
-                            <p>This is the content of the blog post.Lorem ipsum dolor sit ament...</p>
-                        </div>
-
-                        <!-- Repeat -->
-                    </div>
-                </section>
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h2 class="serif text-5xl text-gray-800 mb-4 italic">Your Posts</h2>
+                <p class="text-gray-500 text-base font-light">All the articles you've generated with Scriptly.</p>
             </div>
-        </div>
 
-        <footer class="text-center p-4 text-black mt-6">
-            Not sure what to put here yet
-         </footer>
+            <!-- Posts -->
+            <div class="space-y-4">
+                {% for blog_post in blog_posts %}
+                <a href="{% url 'blog-details' blog_post.id %}" class="block post-card rounded-2xl p-6 no-underline">
+                    <p class="text-xs uppercase tracking-widest text-gray-400 mb-2">{{ blog_post.created_at|date:"F j, Y" }}</p>
+                    <h3 class="text-gray-800 font-medium text-base mb-2">{{ blog_post.youtube_title }}</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed line-clamp-2">{{ blog_post.generated_content|truncatewords:20 }}</p>
+                </a>
+                {% empty %}
+                <div class="glass rounded-2xl p-10 text-center">
+                    <p class="text-gray-400 font-light">No posts yet. Go generate your first one!</p>
+                    <a href="/" class="inline-block mt-4 text-sm text-gray-600 underline">Back to Scriptly</a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>

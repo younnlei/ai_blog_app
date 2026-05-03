@@ -3,153 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Blog Generator</title>
+    <title>Scriptly</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-    @keyframes rotate {
-        from {
-            transform: rotate(0deg);
+        * { font-family: 'DM Sans', sans-serif; }
+
+        body {
+            min-height: 100vh;
+            background: #f5f0e8;
+            background-image:
+                radial-gradient(ellipse at 10% 20%, rgba(220, 210, 140, 0.55) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 10%, rgba(180, 190, 170, 0.4) 0%, transparent 45%),
+                radial-gradient(ellipse at 60% 80%, rgba(210, 200, 150, 0.35) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 80%, rgba(190, 185, 160, 0.3) 0%, transparent 40%);
+            background-attachment: fixed;
         }
-        to { 
-            transform: rotate(360deg);
+
+        .glass {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
-    }
-     
-    
-     @-webkit-keyframes rotate {
-        from {
-            -webkit-transform: rotate(0deg);
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
         }
-        to { 
-            -webkit-transform: rotate(360deg);
+
+        .serif { font-family: 'DM Serif Display', serif; }
+
+        input:focus { outline: none; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-    }
-    
-    .load {
-        width: 100px;
-        height: 100px;
-        margin: 110px auto 0;
-        border:solid 10px #8822aa;
-        border-radius: 50%;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-         -webkit-transition: all 0.5s ease-in;
-        -webkit-animation-name:             rotate; 
-        -webkit-animation-duration:         1.0s; 
-        -webkit-animation-iteration-count:  infinite;
-        -webkit-animation-timing-function: linear;
-            
-             transition: all 0.5s ease-in;
-        animation-name:             rotate; 
-        animation-duration:         1.0s; 
-        animation-iteration-count:  infinite;
-        animation-timing-function: linear; 
-    }
-</style>
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(120, 110, 80, 0.2);
+            border-top-color: rgba(120, 110, 80, 0.7);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .generate-btn {
+            background: rgba(100, 90, 60, 0.85);
+            transition: all 0.2s;
+        }
+        .generate-btn:hover {
+            background: rgba(80, 70, 40, 0.95);
+            transform: translateY(-1px);
+        }
+
+        #blogContent p { margin-bottom: 1rem; line-height: 1.8; }
+    </style>
 </head>
-<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
-    <!-- Nav Bar-->
-     <nav class="bg-blue-600 p-4 text-white flex justify-between">
-     <div>
-        <h1 class="text-3xl font-bold">AI Blog Generator</h1>
-     </div>
-     <div>
-        <a href="/logout/" class="text-white hover:underline">Logout</a>
-     </div>
-     </nav>
+<body class="flex flex-col min-h-screen">
 
-     <br>
-     <br>
+    <!-- Nav -->
+    <nav class="nav-glass px-8 py-4 flex justify-end items-center sticky top-0 z-10">
+        <a href="/logout/" class="text-sm text-gray-500 hover:text-gray-800 transition-colors tracking-wide">Log out</a>
+    </nav>
 
-     <!--Main-->  
-     <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
-        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg">
-            <!--Introduction Section-->
-           <div class="text-center">
-            <h2 class="text-2xl font-semibold mb-4">
-                AI Blog Generator
-            </h2>
-            <p class="text-gray-700">
-                Generate high-quality blog articles from Youtube videos using
-                artificial intelligence. Simply enter the link to the YouTube video below 
-                and let the AI create the content for you!
-            </p>
-           </div> 
+    <!-- Main -->
+    <div class="flex-grow flex items-start justify-center px-4 pt-16 pb-20">
+        <div class="w-full max-w-2xl">
 
-           <br>
-            <!--Youtube Section-->
-           <div>
-             <h2 class="text-xl mb-4 font-semibold"> Enter Youtube Video Link</h2>
-             <div class="flex space-x-4">
-                <input id="youtubeLink" type="url" placeholder="Place Youtube Link..." class="flex-grow p-2 border border-blue-400 rounded-md">
-                <button id="generateBlogButton" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Generate</button>
-             </div>
-           </div>
-           
+            <!-- Hero -->
+            <div class="text-center mb-12">
+                <h2 class="serif text-5xl text-gray-800 mb-4 italic">Scriptly</h2>
+                <p class="text-gray-500 text-base font-light leading-relaxed max-w-md mx-auto">
+                    Paste a YouTube link and Scriptly will transcribe, summarize, and rewrite it as a readable article — automatically.
+                </p>
+            </div>
 
-           <!-- section for loading cirlce -->
-            <div style="display: none;" id="loading-circle" class="load">
+            <!-- Card -->
+            <div class="glass rounded-2xl p-8 shadow-sm">
+
+                <!-- Input -->
+                <div class="flex gap-3 mb-8">
+                    <input
+                        id="youtubeLink"
+                        type="url"
+                        placeholder="Paste a YouTube link..."
+                        class="flex-grow px-4 py-3 rounded-xl bg-white bg-opacity-60 border border-white border-opacity-80 text-gray-700 placeholder-gray-400 text-sm focus:bg-white focus:bg-opacity-80 transition-all"
+                    >
+                    <button
+                        id="generateBlogButton"
+                        class="generate-btn text-white px-6 py-3 rounded-xl text-sm font-medium whitespace-nowrap"
+                    >
+                        Generate
+                    </button>
+                </div>
+
+                <!-- Loading -->
+                <div id="loading-circle" style="display:none;" class="flex flex-col items-center gap-3 py-8">
+                    <div class="spinner"></div>
+                    <p class="text-sm text-gray-400 font-light">Transcribing and writing your article...</p>
+                </div>
+
+                <!-- Output -->
+                <div id="blogOutput" style="display:none;">
+                    <div class="border-t border-white border-opacity-60 pt-6">
+                        <p class="text-xs uppercase tracking-widest text-gray-400 mb-4">Generated Article</p>
+                        <div id="blogContent" class="text-gray-700 text-sm leading-relaxed"></div>
+                    </div>
+                </div>
 
             </div>
-        
-          <!-- Generated Blog Display Section -->
-           <section class="mt-10 flex-grow">
-                <h2 class="text-xl mb-4 font-semibold">Generated Blog Article</h2>
-                <div id="blogContent" class="mt-2 text-gray-700 space-y-4">
-                    
-                </div>
-           </section>
+
+
 
         </div>
-     </div>
+    </div>
 
-     <footer class="text-center p-4 text-black mt-6">
-        Not sure what to put here yet
-     </footer>
-
-     <script>
+    <script>
         document.getElementById('generateBlogButton').addEventListener('click', async () => {
-            
-
             const youtubeLink = document.getElementById('youtubeLink').value;
             const blogContent = document.getElementById('blogContent');
-            
-            if(youtubeLink) {
-                document.getElementById('loading-circle').style.display = 'block';
-                
-                blogContent.innerHTML = ''; // Clear previous content
+            const blogOutput = document.getElementById('blogOutput');
+            const loading = document.getElementById('loading-circle');
 
-                const endpointUrl = '/generate-blog';
-                
-                const loadingIndicator = document.getElementById('loading-circle');
-
-                try {
-                    const response = await fetch(endpointUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ link: youtubeLink })
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok || data.error) {
-                        blogContent.innerHTML = `<p class="text-red-600">${data.error || 'Something went wrong. Please try again later.'}</p>`;
-                    } else {
-                        blogContent.innerHTML = data.content;
-                    }
-
-                } catch (error) {
-                    console.error("Error occurred:", error);
-                    blogContent.innerHTML = '<p class="text-red-600">Something went wrong. Please try again later.</p>';
-                } finally {
-                    loadingIndicator.style.display = 'none';
-                }
-            } else {
+            if (!youtubeLink) {
                 alert("Please enter a YouTube link.");
+                return;
+            }
+
+            loading.style.display = 'flex';
+            blogOutput.style.display = 'none';
+            blogContent.innerHTML = '';
+
+            try {
+                const response = await fetch('/generate-blog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ link: youtubeLink })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    blogContent.innerHTML = `<p class="text-red-500">${data.error || 'Something went wrong. Please try again.'}</p>`;
+                } else {
+                    blogContent.innerHTML = data.content;
+                }
+
+                blogOutput.style.display = 'block';
+
+            } catch (error) {
+                blogContent.innerHTML = '<p class="text-red-500">Something went wrong. Please try again.</p>';
+                blogOutput.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
             }
         });
-     </script>
+    </script>
 </body>
 </html>
