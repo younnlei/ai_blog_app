@@ -3,7 +3,11 @@
 An AI-powered web app that turns YouTube videos into blog posts. 
 Paste a link, get an article.
 
-https://github.com/younnlei/ai_blog_app/assets/Scriptly.mov
+
+
+https://github.com/user-attachments/assets/124da642-e75b-4624-ab63-af3e078437ab
+
+
 
 ## How it works
 
